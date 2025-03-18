@@ -37,33 +37,19 @@ const basicAuthMiddleware = (req, res, next) => {
 };
 
 // Middleware for Bearer Token Auth
-// const bearerAuthMiddleware = (req, res, next) => {
-//     const authHeader = req.headers.authorization;
-//     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-//         return res.status(401).json({ error: 'Unauthorized - Bearer token required' });
-//     }
-//     const token = authHeader.split(' ')[1];
-
-//     try {
-//         jwt.verify(token, JWT_SECRET);
-//         next();
-//     } catch (err) {
-//         return res.status(403).json({ error: 'Invalid or expired token' });
-//     }
-// };
-
 const bearerAuthMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.split(' ')[1];
-        try {
-            jwt.verify(token, JWT_SECRET);
-            return next();
-        } catch (err) {
-            return res.status(403).json({ error: 'Invalid or expired token' });
-        }
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized - Bearer token required' });
     }
-    next(); // Allow unauthenticated access as well
+    const token = authHeader.split(' ')[1];
+
+    try {
+        jwt.verify(token, JWT_SECRET);
+        next();
+    } catch (err) {
+        return res.status(403).json({ error: 'Invalid or expired token' });
+    }
 };
 
 // OAuth2 Mock Endpoints
@@ -75,26 +61,13 @@ app.get('/authorize', (req, res) => {
     res.redirect(`${redirect_uri}?code=mock_code&state=${state}`);
 });
 
-// app.post('/token', (req, res) => {
-//     const { code, client_id, client_secret, audience } = req.body;
-//     if (!code || !client_id || !client_secret || !audience) {
-//         return res.status(400).json({ error: 'Missing required parameters' });
-//     }
-//     if (code === 'mock_code') {
-//         const token = jwt.sign({ user: 'mock_user', client_id, audience }, JWT_SECRET, { expiresIn: '1h' });
-//         res.json({ access_token: token, token_type: 'Bearer', expires_in: 3600 });
-//     } else {
-//         res.status(400).json({ error: 'invalid_grant' });
-//     }
-// });
-
 app.post('/token', (req, res) => {
-    const { code, client_id, client_secret } = req.body; // Removed 'audience'
-    if (!code || !client_id || !client_secret) {
+    const { code, client_id, client_secret, audience } = req.body;
+    if (!code || !client_id || !client_secret || !audience) {
         return res.status(400).json({ error: 'Missing required parameters' });
     }
     if (code === 'mock_code') {
-        const token = jwt.sign({ user: 'mock_user', client_id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ user: 'mock_user', client_id, audience }, JWT_SECRET, { expiresIn: '1h' });
         res.json({ access_token: token, token_type: 'Bearer', expires_in: 3600 });
     } else {
         res.status(400).json({ error: 'invalid_grant' });
