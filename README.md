@@ -14,6 +14,6 @@
 | **Form-URLEncoded** | `curl -X POST "http://localhost:3000/data" -H "Content-Type: application/x-www-form-urlencoded" -d "message=Test"` |
 | **Multipart File Upload** | `curl -X POST "http://localhost:3000/upload" -H "Content-Type: multipart/form-data" -F "file=@/path/to/file.jpg"` |
 | **Query Params** | `curl -X GET "http://localhost:3000/data?param1=value1&param2=value2"` |
-| **Send Cookies** | `curl -X GET "http://localhost:3000/data" -b "sessionid=12345; username=souvik"` |
+| **Send Cookies** | `curl -X GET "http://localhost:3000/data" -b "sessionid=12345; username=admin"` |
 | **Store Cookies** | `curl -X GET "http://localhost:3000/data" -c cookies.txt` |
 | **Use Stored Cookies** | `curl -X GET "http://localhost:3000/data" -b cookies.txt` |
