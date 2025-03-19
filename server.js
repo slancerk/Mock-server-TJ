@@ -76,7 +76,25 @@ app.post('/token', (req, res) => {
 
 // REST API Methods with Authentication Options
 app.get('/data', (req, res) => res.json({ message: 'GET request successful' }));
-app.post('/data', bearerAuthMiddleware, (req, res) => res.json({ message: 'POST request successful' }));
+
+app.post('/data', (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.json({ message: 'POST request successful' });
+    }
+
+    if (authHeader.startsWith('Basic ')) {
+        return basicAuthMiddleware(req, res, next);
+    } else if (authHeader.startsWith('Bearer ')) {
+        return bearerAuthMiddleware(req, res, next);
+    } else {
+        return res.status(401).json({ error: 'Invalid or unsupported authentication type' });
+    }
+}, (req, res) => {
+    res.json({ message: 'POST request successful' });
+});
+
 app.put('/data', basicAuthMiddleware, (req, res) => res.json({ message: 'PUT request successful' }));
 app.patch('/data', (req, res) => res.json({ message: 'PATCH request successful' }));
 app.delete('/data', (req, res) => res.json({ message: 'DELETE request successful' }));
