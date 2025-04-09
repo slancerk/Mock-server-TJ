@@ -1,3 +1,26 @@
+## 🚀 Running the Mock Server
+
+To build and run the mock server, use the provided script:
+
+```bash
+./rebuild-mock-server.sh
+```
+## 🔄 What this script does:
+
+*Creates a .env file from example.env (if not already present).
+Stops and removes any existing mock-server Docker container.
+Removes the old Docker image for mock-server (if any).
+Builds a fresh Docker image.
+Runs the mock server on port 3003.*
+
+🔐 Permissions
+If you're running this script for the first time or get a "Permission denied" error, make it executable with:
+
+```bash
+chmod +x rebuild-mock-server.sh
+```
+
+
 ✅ Summary of cURL Tests
 
 | **Test**                          | **Command Example** |

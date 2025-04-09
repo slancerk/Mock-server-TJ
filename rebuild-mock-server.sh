@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Step 0: Create .env from example.env if not exists
+if [ ! -f .env ]; then
+    echo ".env file not found. Creating from example.env..."
+    cp example.env .env
+else
+    echo ".env file already exists. Skipping creation."
+fi
+
 # Step 1: Find and stop the running mock-server container (if any)
 container_id=$(docker ps -q --filter "ancestor=mock-server")
 
